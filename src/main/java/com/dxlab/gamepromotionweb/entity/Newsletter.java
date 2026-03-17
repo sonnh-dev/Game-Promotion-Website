@@ -1,6 +1,8 @@
-package com.dxlab.gamepromotionweb.Home.Entity;
+package com.dxlab.gamepromotionweb.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +18,12 @@ public class Newsletter {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Size(max = 255)
+    @NotNull
     @Column(name = "email", nullable = false)
     private String email;
 
+    @NotNull
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 

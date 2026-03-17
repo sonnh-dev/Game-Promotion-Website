@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JpaBuddyIdeaProjectConfig">
-    <option name="reLastEntityCreationPackage" value="src/main/java/com/dxlab/gamepromotionweb/Model" />
+    <option name="reLastEntityCreationPackage" value="src/main/java/com/dxlab/gamepromotionweb/entity" />
     <option name="reverseEngineeringLastDbConnectionId" value="0226bff7-246f-4325-a63c-9a8215b2950e" />
   </component>
 </project>

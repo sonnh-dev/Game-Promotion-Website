@@ -1,4 +1,4 @@
-package com.dxlab.gamepromotionweb.Admin.controller;
+package com.dxlab.gamepromotionweb.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,9 +9,9 @@ import java.security.Principal;
 @Controller
 public class HomeController {
 
-    @GetMapping("/login")
-    public String login(){
-        return "Login";
+    @GetMapping("/home")
+    public String home(Model model) {
+        return "home";
     }
 
     @GetMapping("/dashboard")
