@@ -1,5 +1,6 @@
-package com.dxlab.gamepromotionweb.Model;
+package com.dxlab.gamepromotionweb.Home.Entity;
 
+import com.dxlab.gamepromotionweb.Admin.Entity.Admin;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

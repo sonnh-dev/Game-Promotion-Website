@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&amp;display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="CSS/Dashboard.css">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="h-full">
+<!-- Sidebar -->
+<div id="app" class="flex h-full w-full overflow-hidden" style="animation: fadeIn 0.4s ease">
+    <aside id="sidebar" class="w-64 flex-shrink-0 p-4 flex flex-col gap-1 scroll-area overflow-y-auto"
+           style="background: var(--surface); border-right: 1px solid rgba(255,255,255,0.06);">
+        <div class="flex items-center gap-3 px-3 py-4 mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg"
+                 style="background: var(--primary);">
+                A
+            </div>
+            <div>
+                <div id="sidebar-title" class="font-bold text-sm" style="color: var(--text);">
+                    Admin Panel
+                </div>
+                <div class="text-xs" style="color: var(--secondary);">
+                    Quản trị viên
+                </div>
+            </div>
+        </div>
+        <button class="sidebar-item active flex items-center gap-3 px-3 py-2.5 text-sm" data-page="dashboard"
+                onclick="switchPage('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>
+            Tổng quan
+        </button>
+        <button class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm" data-page="news"
+                onclick="switchPage('news')"><i data-lucide="newspaper" style="width:18px;height:18px"></i> Tin tức
+        </button>
+        <button class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm" data-page="characters"
+                onclick="switchPage('characters')"><i data-lucide="users" style="width:18px;height:18px"></i> Nhân vật
+        </button>
+        <button class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm" data-page="rankings"
+                onclick="switchPage('rankings')"><i data-lucide="trophy" style="width:18px;height:18px"></i> Bảng xếp
+            hạng
+        </button>
+        <button class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm" data-page="media"
+                onclick="switchPage('media')"><i data-lucide="film" style="width:18px;height:18px"></i> Banner &amp;
+            Video
+        </button>
+        <button class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm" data-page="themes"
+                onclick="switchPage('themes')"><i data-lucide="palette" style="width:18px;height:18px"></i> Giao diện
+        </button>
+        <div class="mt-auto pt-4 px-3">
+            <div class="text-xs" style="color: var(--secondary);">
+                © 2025 Admin Dashboard
+            </div>
+        </div>
+    </aside><!-- Main content -->
+    <main class="flex-1 overflow-y-auto scroll-area p-6" style="background: var(--bg);"><!-- Dashboard Page -->
+        <section id="page-dashboard" class="page-content">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 id="main-title" class="text-2xl font-bold" style="color: var(--text);">Tổng quan</h1>
+                    <p id="welcome-msg" class="text-sm mt-1" style="color: var(--secondary);">Chào mừng bạn trở lại! Đây
+                        là tổng quan hôm nay.</p>
+                </div>
+                <div class="flex items-center gap-2"><span class="badge"
+                                                           style="background: rgba(108,92,231,0.15); color: var(--primary);">Demo Analytics</span>
+                </div>
+            </div><!-- Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="card stat-card p-5" id="stat-views">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                             style="background: rgba(108,92,231,0.15);"><i data-lucide="eye"
+                                                                           style="width:20px;height:20px;color:var(--primary)"></i>
+                        </div>
+                        <span class="text-xs font-semibold" style="color: #00b894;">+12.5%</span>
+                    </div>
+                    <div class="text-2xl font-bold" style="color: var(--text);">
+                        24,580
+                    </div>
+                    <div class="text-xs mt-1" style="color: var(--secondary);">
+                        Lượt xem trang
+                    </div>
+                    <div class="mini-chart mt-3" id="chart-views"></div>
+                </div>
+                <div class="card stat-card p-5" id="stat-users">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                             style="background: rgba(0,206,201,0.15);"><i data-lucide="users"
+                                                                          style="width:20px;height:20px;color:#00cec9"></i>
+                        </div>
+                        <span class="text-xs font-semibold" style="color: #00b894;">+8.3%</span>
+                    </div>
+                    <div class="text-2xl font-bold" style="color: var(--text);">
+                        3,842
+                    </div>
+                    <div class="text-xs mt-1" style="color: var(--secondary);">
+                        Người dùng
+                    </div>
+                    <div class="mini-chart mt-3" id="chart-users"></div>
+                </div>
+                <div class="card stat-card p-5" id="stat-time">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                             style="background: rgba(253,203,110,0.15);"><i data-lucide="clock"
+                                                                            style="width:20px;height:20px;color:#fdcb6e"></i>
+                        </div>
+                        <span class="text-xs font-semibold" style="color: #fdcb6e;">-2.1%</span>
+                    </div>
+                    <div class="text-2xl font-bold" style="color: var(--text);">
+                        4:32
+                    </div>
+                    <div class="text-xs mt-1" style="color: var(--secondary);">
+                        Thời gian trung bình
+                    </div>
+                    <div class="mini-chart mt-3" id="chart-time"></div>
+                </div>
+                <div class="card stat-card p-5" id="stat-engagement">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                             style="background: rgba(225,112,85,0.15);"><i data-lucide="trending-up"
+                                                                           style="width:20px;height:20px;color:#e17055"></i>
+                        </div>
+                        <span class="text-xs font-semibold" style="color: #00b894;">+5.7%</span>
+                    </div>
+                    <div class="text-2xl font-bold" style="color: var(--text);">
+                        68.2%
+                    </div>
+                    <div class="text-xs mt-1" style="color: var(--secondary);">
+                        Tỷ lệ tương tác
+                    </div>
+                    <div class="mini-chart mt-3" id="chart-engage"></div>
+                </div>
+            </div><!-- Charts row -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                <div class="card p-5 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold" style="color: var(--text);">Lượt truy cập 7 ngày</h3>
+                        <div class="flex gap-1">
+                            <button class="tab-btn active text-xs" onclick="setChartPeriod(this, 7)">7 ngày</button>
+                            <button class="tab-btn text-xs" onclick="setChartPeriod(this, 30)">30 ngày</button>
+                        </div>
+                    </div>
+                    <div id="main-chart" class="flex items-end gap-2 justify-between" style="height: 180px;"></div>
+                    <div id="main-chart-labels" class="flex justify-between mt-2"></div>
+                </div>
+                <div class="card p-5">
+                    <h3 class="font-bold mb-4" style="color: var(--text);">Nguồn truy cập</h3>
+                    <div class="space-y-3" id="traffic-sources">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full" style="background:#6c5ce7"></div>
+                                <span class="text-sm">Google</span>
+                            </div>
+                            <span class="text-sm font-semibold">42%</span>
+                        </div>
+                        <div class="w-full rounded-full h-2" style="background:rgba(255,255,255,0.08)">
+                            <div class="h-2 rounded-full" style="background:#6c5ce7;width:42%"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full" style="background:#00cec9"></div>
+                                <span class="text-sm">Trực tiếp</span>
+                            </div>
+                            <span class="text-sm font-semibold">28%</span>
+                        </div>
+                        <div class="w-full rounded-full h-2" style="background:rgba(255,255,255,0.08)">
+                            <div class="h-2 rounded-full" style="background:#00cec9;width:28%"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full" style="background:#fdcb6e"></div>
+                                <span class="text-sm">Mạng xã hội</span>
+                            </div>
+                            <span class="text-sm font-semibold">20%</span>
+                        </div>
+                        <div class="w-full rounded-full h-2" style="background:rgba(255,255,255,0.08)">
+                            <div class="h-2 rounded-full" style="background:#fdcb6e;width:20%"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full" style="background:#e17055"></div>
+                                <span class="text-sm">Khác</span>
+                            </div>
+                            <span class="text-sm font-semibold">10%</span>
+                        </div>
+                        <div class="w-full rounded-full h-2" style="background:rgba(255,255,255,0.08)">
+                            <div class="h-2 rounded-full" style="background:#e17055;width:10%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- Recent activity -->
+            <div class="card p-5">
+                <h3 class="font-bold mb-4" style="color: var(--text);">Hoạt động gần đây</h3>
+                <div id="recent-activity" class="space-y-3">
+                    <div class="text-sm text-center py-8" style="color: var(--secondary);">
+                        Chưa có hoạt động nào. Hãy thêm tin tức hoặc nhân vật!
+                    </div>
+                </div>
+            </div>
+        </section><!-- News Page -->
+        <section id="page-news" class="page-content hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold" style="color: var(--text);">Quản lý tin tức</h1>
+                <button class="btn-primary flex items-center gap-2" onclick="openModal('news')"><i data-lucide="plus"
+                                                                                                   style="width:16px;height:16px"></i>
+                    Thêm tin
+                </button>
+            </div>
+            <div id="news-list" class="space-y-3">
+                <div class="card p-8 text-center" style="color: var(--secondary);"><i data-lucide="newspaper"
+                                                                                      style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+                    <p>Chưa có tin tức nào. Nhấn "Thêm tin" để bắt đầu!</p>
+                </div>
+            </div>
+        </section><!-- Characters Page -->
+        <section id="page-characters" class="page-content hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold" style="color: var(--text);">Quản lý nhân vật</h1>
+                <button class="btn-primary flex items-center gap-2" onclick="openModal('character')"><i
+                        data-lucide="plus" style="width:16px;height:16px"></i> Thêm nhân vật
+                </button>
+            </div>
+            <div id="characters-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="card p-8 text-center col-span-full" style="color: var(--secondary);"><i data-lucide="users"
+                                                                                                    style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+                    <p>Chưa có nhân vật nào. Nhấn "Thêm nhân vật" để bắt đầu!</p>
+                </div>
+            </div>
+        </section><!-- Rankings Page -->
+        <section id="page-rankings" class="page-content hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold" style="color: var(--text);">Bảng xếp hạng</h1>
+                <button class="btn-primary flex items-center gap-2" onclick="openModal('ranking')"><i data-lucide="plus"
+                                                                                                      style="width:16px;height:16px"></i>
+                    Thêm mục
+                </button>
+            </div>
+            <div class="card overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead>
+                    <tr style="background: rgba(255,255,255,0.04);">
+                        <th class="text-left p-4 font-semibold" style="color: var(--secondary);">Hạng</th>
+                        <th class="text-left p-4 font-semibold" style="color: var(--secondary);">Tên</th>
+                        <th class="text-left p-4 font-semibold" style="color: var(--secondary);">Điểm</th>
+                        <th class="text-left p-4 font-semibold" style="color: var(--secondary);">Danh mục</th>
+                        <th class="text-right p-4 font-semibold" style="color: var(--secondary);">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody id="rankings-body">
+                    <tr>
+                        <td colspan="5" class="p-8 text-center" style="color: var(--secondary);">Chưa có dữ liệu xếp
+                            hạng
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- Media Page -->
+        <section id="page-media" class="page-content hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold" style="color: var(--text);">Banner &amp; Video giới thiệu</h1>
+                <button class="btn-primary flex items-center gap-2" onclick="openModal('media')"><i data-lucide="plus"
+                                                                                                    style="width:16px;height:16px"></i>
+                    Thêm media
+                </button>
+            </div>
+            <div id="media-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="card p-8 text-center col-span-full" style="color: var(--secondary);"><i data-lucide="film"
+                                                                                                    style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+                    <p>Chưa có banner/video nào. Nhấn "Thêm media" để bắt đầu!</p>
+                </div>
+            </div>
+        </section><!-- Themes Page -->
+        <section id="page-themes" class="page-content hidden">
+            <h1 class="text-2xl font-bold mb-6" style="color: var(--text);">Đổi giao diện</h1>
+            <div class="card p-6 mb-6">
+                <h3 class="font-bold mb-4" style="color: var(--text);">Chọn theme</h3>
+                <div class="theme-picker">
+                    <div class="theme-option selected" style="background: linear-gradient(135deg, #0f1117, #1a1d27);"
+                         onclick="setTheme('dark', this)" title="Dark">
+                        <div class="absolute bottom-2 left-0 right-0 text-center text-xs font-semibold text-white">
+                            Dark
+                        </div>
+                    </div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #f0f2f5, #ffffff);"
+                         onclick="setTheme('light', this)" title="Light">
+                        <div class="absolute bottom-2 left-0 right-0 text-center text-xs font-semibold"
+                             style="color:#333">
+                            Light
+                        </div>
+                    </div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #0a192f, #112240);"
+                         onclick="setTheme('ocean', this)" title="Ocean">
+                        <div class="absolute bottom-2 left-0 right-0 text-center text-xs font-semibold"
+                             style="color:#64ffda">
+                            Ocean
+                        </div>
+                    </div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #1a0a2e, #2d1b4e);"
+                         onclick="setTheme('sunset', this)" title="Sunset">
+                        <div class="absolute bottom-2 left-0 right-0 text-center text-xs font-semibold"
+                             style="color:#ff6b6b">
+                            Sunset
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h3 class="font-bold mb-2" style="color: var(--text);">Xem trước</h3>
+                <p class="text-sm mb-4" style="color: var(--secondary);">Theme hiện tại sẽ được áp dụng cho toàn bộ
+                    dashboard.</p>
+                <div class="flex gap-3">
+                    <div class="flex-1 p-4 rounded-xl" style="background: var(--primary); color: #fff;">
+                        <div class="font-bold text-sm">
+                            Primary
+                        </div>
+                    </div>
+                    <div class="flex-1 p-4 rounded-xl"
+                         style="background: var(--surface); border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="font-bold text-sm" style="color: var(--text);">
+                            Surface
+                        </div>
+                    </div>
+                    <div class="flex-1 p-4 rounded-xl"
+                         style="background: var(--bg); border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="font-bold text-sm" style="color: var(--secondary);">
+                            Background
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+<!-- Modal container -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="if(event.target===this)closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between mb-5">
+            <h2 id="modal-title" class="text-lg font-bold" style="color: var(--text);"></h2>
+            <button onclick="closeModal()" class="p-1 rounded-lg hover:bg-white/10 transition"><i data-lucide="x"
+                                                                                                  style="width:20px;height:20px"></i>
+            </button>
+        </div>
+        <form id="modal-form" onsubmit="handleFormSubmit(event)">
+            <div id="modal-fields" class="space-y-4"></div>
+            <div class="flex gap-3 mt-6">
+                <button type="submit" class="btn-primary flex-1" id="modal-submit-btn">Lưu</button>
+                <button type="button" class="btn-secondary flex-1" onclick="closeModal()">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+<script>
+    // ===== STATE =====
+    let allData = {
+        news: [],
+        characters: [],
+        rankings: [],
+        media: [],
+        analytics: null
+    };
+    let currentPage = 'dashboard';
+    let currentTheme = 'dark';
+    let apiBaseUrl = 'http://localhost:8080/api'; // Thay đổi theo server Spring Boot của bạn
+    let deletingId = null;
+
+    const defaultConfig = {
+        dashboard_title: 'Tổng quan',
+        welcome_text: 'Chào mừng bạn trở lại! Đây là tổng quan hôm nay.',
+        background_color: '#0f1117',
+        surface_color: '#1a1d27',
+        text_color: '#e4e6ef',
+        primary_color: '#6c5ce7',
+        secondary_color: '#a29bfe',
+        font_family: 'Be Vietnam Pro',
+        font_size: 16
+    };
+
+    // ===== API CALLS =====
+    async function fetchFromAPI(endpoint) {
+        try {
+            const res = await fetch(`${apiBaseUrl}${endpoint}`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        } catch (err) {
+            console.error(`API Error (${endpoint}):`, err);
+            return null;
+        }
+    }
+
+    async function postToAPI(endpoint, data) {
+        try {
+            const res = await fetch(`${apiBaseUrl}${endpoint}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        } catch (err) {
+            console.error(`API Error (${endpoint}):`, err);
+            return null;
+        }
+    }
+
+    async function putToAPI(endpoint, data) {
+        try {
+            const res = await fetch(`${apiBaseUrl}${endpoint}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        } catch (err) {
+            console.error(`API Error (${endpoint}):`, err);
+            return null;
+        }
+    }
+
+    async function deleteFromAPI(endpoint) {
+        try {
+            const res = await fetch(`${apiBaseUrl}${endpoint}`, {method: 'DELETE'});
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.ok;
+        } catch (err) {
+            console.error(`API Error (${endpoint}):`, err);
+            return false;
+        }
+    }
+
+    // ===== ELEMENT SDK =====
+    window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+            const title = config.dashboard_title || defaultConfig.dashboard_title;
+            const welcome = config.welcome_text || defaultConfig.welcome_text;
+            const font = config.font_family || defaultConfig.font_family;
+            const size = config.font_size || defaultConfig.font_size;
+            const bg = config.background_color || defaultConfig.background_color;
+            const surface = config.surface_color || defaultConfig.surface_color;
+            const text = config.text_color || defaultConfig.text_color;
+            const primary = config.primary_color || defaultConfig.primary_color;
+            const secondary = config.secondary_color || defaultConfig.secondary_color;
+
+            const el = (id) => document.getElementById(id);
+            if (el('main-title')) el('main-title').textContent = title;
+            if (el('welcome-msg')) el('welcome-msg').textContent = welcome;
+            if (el('sidebar-title')) el('sidebar-title').textContent = 'Admin Panel';
+
+            document.documentElement.style.setProperty('--bg', bg);
+            document.documentElement.style.setProperty('--surface', surface);
+            document.documentElement.style.setProperty('--text', text);
+            document.documentElement.style.setProperty('--primary', primary);
+            document.documentElement.style.setProperty('--secondary', secondary);
+
+            document.querySelectorAll('*').forEach(node => {
+                if (node.style) node.style.fontFamily = `${font}, sans-serif`;
+            });
+
+            const baseSize = size;
+            document.querySelectorAll('h1').forEach(h => h.style.fontSize = `${baseSize * 1.6}px`);
+            document.querySelectorAll('h2').forEach(h => h.style.fontSize = `${baseSize * 1.3}px`);
+            document.querySelectorAll('h3').forEach(h => h.style.fontSize = `${baseSize * 1.15}px`);
+            document.querySelectorAll('p, span, td, th, button, input, textarea, select, label, a, div').forEach(el => {
+                if (!el.closest('h1') && !el.closest('h2') && !el.closest('h3')) {
+                    // only set if no explicit size already
+                }
+            });
+        },
+        mapToCapabilities: (config) => ({
+            recolorables: [
+                {
+                    get: () => config.background_color || defaultConfig.background_color, set: (v) => {
+                        config.background_color = v;
+                        window.elementSdk.setConfig({background_color: v});
+                    }
+                },
+                {
+                    get: () => config.surface_color || defaultConfig.surface_color, set: (v) => {
+                        config.surface_color = v;
+                        window.elementSdk.setConfig({surface_color: v});
+                    }
+                },
+                {
+                    get: () => config.text_color || defaultConfig.text_color, set: (v) => {
+                        config.text_color = v;
+                        window.elementSdk.setConfig({text_color: v});
+                    }
+                },
+                {
+                    get: () => config.primary_color || defaultConfig.primary_color, set: (v) => {
+                        config.primary_color = v;
+                        window.elementSdk.setConfig({primary_color: v});
+                    }
+                },
+                {
+                    get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => {
+                        config.secondary_color = v;
+                        window.elementSdk.setConfig({secondary_color: v});
+                    }
+                }
+            ],
+            borderables: [],
+            fontEditable: {
+                get: () => config.font_family || defaultConfig.font_family,
+                set: (v) => {
+                    config.font_family = v;
+                    window.elementSdk.setConfig({font_family: v});
+                }
+            },
+            fontSizeable: {
+                get: () => config.font_size || defaultConfig.font_size,
+                set: (v) => {
+                    config.font_size = v;
+                    window.elementSdk.setConfig({font_size: v});
+                }
+            }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+            ['dashboard_title', config.dashboard_title || defaultConfig.dashboard_title],
+            ['welcome_text', config.welcome_text || defaultConfig.welcome_text]
+        ])
+    });
+
+    // ===== DATA SDK =====
+    const dataHandler = {
+        onDataChanged(data) {
+            allData = data;
+            renderCurrentPage();
+            renderRecentActivity();
+        }
+    };
+
+    (async () => {
+        const res = await window.dataSdk.init(dataHandler);
+        if (!res.isOk) console.error('Data SDK init failed');
+    })();
+
+    // ===== NAVIGATION =====
+    function switchPage(page) {
+        currentPage = page;
+        document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+        const target = document.getElementById('page-' + page);
+        if (target) target.classList.remove('hidden');
+
+        document.querySelectorAll('.sidebar-item').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.page === page);
+        });
+        renderCurrentPage();
+    }
+
+    function renderCurrentPage() {
+        if (currentPage === 'news') renderNews();
+        else if (currentPage === 'characters') renderCharacters();
+        else if (currentPage === 'rankings') renderRankings();
+        else if (currentPage === 'media') renderMedia();
+    }
+
+    // ===== CHARTS =====
+    function renderMiniChart(containerId, count) {
+        const c = document.getElementById(containerId);
+        if (!c) return;
+        if (c.children.length === 0) {
+            for (let i = 0; i < count; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'mini-bar';
+                c.appendChild(bar);
+            }
+        }
+        [...c.children].forEach(bar => {
+            bar.style.height = (Math.random() * 80 + 20) + '%';
+        });
+    }
+
+    function renderMainChart(days) {
+        const container = document.getElementById('main-chart');
+        const labels = document.getElementById('main-chart-labels');
+        if (!container) return;
+        const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+        const now = new Date();
+
+        container.innerHTML = '';
+        labels.innerHTML = '';
+
+        for (let i = days - 1; i >= 0; i--) {
+            const d = new Date(now);
+            d.setDate(d.getDate() - i);
+            const val = Math.random() * 70 + 30;
+            const visitors = Math.floor(Math.random() * 3000 + 1500);
+
+            const barWrap = document.createElement('div');
+            barWrap.className = 'flex-1 flex flex-col items-center relative';
+            barWrap.style.height = '100%';
+            barWrap.style.display = 'flex';
+            barWrap.style.alignItems = 'center';
+            barWrap.style.justifyContent = 'flex-end';
+
+            const bar = document.createElement('div');
+            bar.className = 'chart-bar w-full';
+            bar.style.background = `var(--primary)`;
+            bar.style.height = '0%';
+            bar.style.minHeight = '4px';
+            bar.style.opacity = '0.8';
+            bar.style.cursor = 'pointer';
+            bar.style.transition = 'opacity 0.2s';
+
+            const tooltip = document.createElement('div');
+            tooltip.className = 'absolute bottom-full mb-2 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap hidden';
+            tooltip.style.background = 'var(--primary)';
+            tooltip.style.color = '#fff';
+            tooltip.style.zIndex = '10';
+            tooltip.textContent = `${visitors.toLocaleString('vi-VN')} lượt`;
+
+            bar.addEventListener('mouseenter', () => {
+                tooltip.classList.remove('hidden');
+                bar.style.opacity = '1';
+            });
+            bar.addEventListener('mouseleave', () => {
+                tooltip.classList.add('hidden');
+                bar.style.opacity = '0.8';
+            });
+
+            barWrap.appendChild(tooltip);
+            barWrap.appendChild(bar);
+            container.appendChild(barWrap);
+
+            setTimeout(() => {
+                bar.style.height = val + '%';
+            }, 50 + i * 30);
+
+            const lbl = document.createElement('div');
+            lbl.className = 'text-xs';
+            lbl.style.color = 'var(--secondary)';
+            lbl.textContent = days <= 7 ? dayNames[d.getDay()] : `${d.getDate()}/${d.getMonth() + 1}`;
+            labels.appendChild(lbl);
+        }
+    }
+
+    function setChartPeriod(btn, days) {
+        btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderMainChart(days);
+    }
+
+    // ===== RENDER FUNCTIONS =====
+    function renderNews() {
+        const list = document.getElementById('news-list');
+        const news = allData.news || [];
+        if (news.length === 0) {
+            list.innerHTML = `<div class="card p-8 text-center" style="color:var(--secondary)"><p>Chưa có tin tức nào.</p></div>`;
+            return;
+        }
+        list.innerHTML = news.map(item => `
+    <div class="card p-5" data-id="${item.id}">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="badge" style="background:${item.status === 'published' ? '#00b894' : '#fdcb6e'}20;color:${item.status === 'published' ? '#00b894' : '#fdcb6e'}">${item.status === 'published' ? 'Đã đăng' : 'Bản nháp'}</span>
+            <span class="text-xs" style="color:var(--secondary)">${esc(item.category || 'Chung')}</span>
+          </div>
+          <h3 class="font-bold mb-1" style="color:var(--text)">${esc(item.title)}</h3>
+          <p class="text-sm line-clamp-2" style="color:var(--secondary)">${esc(item.content || '')}</p>
+          <div class="text-xs mt-2" style="color:var(--secondary)">${formatDate(item.createdAt)}</div>
+        </div>
+        <div class="flex gap-2" id="actions-${item.id}">
+          ${deletingId === item.id ? `
+            <div class="confirm-bar">
+              <span class="text-xs">Xác nhận xóa?</span>
+              <button class="text-xs font-bold underline" onclick="confirmDelete('news', ${item.id})">Xóa</button>
+              <button class="text-xs" onclick="cancelDelete()">Hủy</button>
+            </div>
+          ` : `
+            <button class="btn-secondary p-2" onclick="window.location.href='${apiBaseUrl}/news/${item.id}/edit'"><i data-lucide="edit" style="width:14px;height:14px"></i></button>
+            <button class="btn-secondary p-2" onclick="startDelete(${item.id})"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button>
+          `}
+        </div>
+      </div>
+    </div>`).join('');
+        lucide.createIcons({nodes: [list]});
+    }
+
+    function renderCharacters() {
+        const list = document.getElementById('characters-list');
+        const chars = allData.characters || [];
+        if (chars.length === 0) {
+            list.innerHTML = `<div class="card p-8 text-center col-span-full" style="color:var(--secondary)"><p>Chưa có nhân vật nào.</p></div>`;
+            return;
+        }
+        list.innerHTML = chars.map(item => {
+            const initials = (item.name || 'N').substring(0, 2).toUpperCase();
+            return `
+      <div class="card p-5" data-id="${item.id}">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold" style="background:var(--primary)">${initials}</div>
+          <div class="flex-1">
+            <h3 class="font-bold" style="color:var(--text)">${esc(item.name)}</h3>
+            <span class="text-xs" style="color:var(--secondary)">${esc(item.role || 'Không rõ')}</span>
+          </div>
+        </div>
+        <p class="text-sm mb-3" style="color:var(--secondary)">${esc(item.description || 'Chưa có mô tả')}</p>
+        <div class="flex justify-end gap-2" id="actions-${item.id}">
+          ${deletingId === item.id ? `
+            <div class="confirm-bar">
+              <span class="text-xs">Xóa?</span>
+              <button class="text-xs font-bold underline" onclick="confirmDelete('characters', ${item.id})">Xóa</button>
+              <button class="text-xs" onclick="cancelDelete()">Hủy</button>
+            </div>
+          ` : `
+            <button class="btn-secondary p-2" onclick="window.location.href='${apiBaseUrl}/characters/${item.id}/edit'"><i data-lucide="edit" style="width:14px;height:14px"></i></button>
+            <button class="btn-secondary p-2" onclick="startDelete(${item.id})"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button>
+          `}
+        </div>
+      </div>`;
+        }).join('');
+        lucide.createIcons({nodes: [list]});
+    }
+
+    function renderRankings() {
+        const tbody = document.getElementById('rankings-body');
+        const rankings = (allData.rankings || []).sort((a, b) => (a.rank || 999) - (b.rank || 999));
+        if (rankings.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center" style="color:var(--secondary)">Chưa có dữ liệu xếp hạng</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = rankings.map((item, idx) => {
+            const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${item.rank || idx + 1}`;
+            return `
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.04)" data-id="${item.id}">
+        <td class="p-4 font-bold text-lg">${medal}</td>
+        <td class="p-4 font-semibold" style="color:var(--text)">${esc(item.name)}</td>
+        <td class="p-4"><span class="badge" style="background:var(--primary);color:#fff">${item.score || 0}</span></td>
+        <td class="p-4 text-sm" style="color:var(--secondary)">${esc(item.category || '')}</td>
+        <td class="p-4 text-right">
+          <div class="flex justify-end gap-2" id="actions-${item.id}">
+            ${deletingId === item.id ? `
+              <div class="confirm-bar">
+                <span class="text-xs">Xóa?</span>
+                <button class="text-xs font-bold underline" onclick="confirmDelete('rankings', ${item.id})">Xóa</button>
+                <button class="text-xs" onclick="cancelDelete()">Hủy</button>
+              </div>
+            ` : `
+              <button class="btn-secondary p-2" onclick="window.location.href='${apiBaseUrl}/rankings/${item.id}/edit'"><i data-lucide="edit" style="width:14px;height:14px"></i></button>
+              <button class="btn-secondary p-2" onclick="startDelete(${item.id})"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button>
+            `}
+          </div>
+        </td>
+      </tr>`;
+        }).join('');
+        lucide.createIcons({nodes: [tbody]});
+    }
+
+    function renderMedia() {
+        const list = document.getElementById('media-list');
+        const media = allData.media || [];
+        if (media.length === 0) {
+            list.innerHTML = `<div class="card p-8 text-center col-span-full" style="color:var(--secondary)"><p>Chưa có banner/video nào.</p></div>`;
+            return;
+        }
+        list.innerHTML = media.map(item => {
+            const isVideo = item.type === 'video';
+            const icon = isVideo ? 'video' : 'image';
+            const typeLabel = isVideo ? 'Video' : 'Banner';
+            return `
+      <div class="card p-5" data-id="${item.id}">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(108,92,231,0.15)">
+            <i data-lucide="${icon}" style="width:20px;height:20px;color:var(--primary)"></i>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-bold text-sm" style="color:var(--text)">${esc(item.title)}</h3>
+            <span class="badge text-xs" style="background:${isVideo ? '#e17055' : '#00cec9'}20;color:${isVideo ? '#e17055' : '#00cec9'}">${typeLabel}</span>
+          </div>
+        </div>
+        ${item.url ? `<div class="text-xs mb-2 truncate" style="color:var(--secondary)">URL: ${esc(item.url)}</div>` : ''}
+        <p class="text-sm mb-3" style="color:var(--secondary)">${esc(item.description || 'Không có mô tả')}</p>
+        <div class="flex items-center justify-between">
+          <span class="badge" style="background:${item.status === 'active' ? '#00b894' : '#fdcb6e'}20;color:${item.status === 'active' ? '#00b894' : '#fdcb6e'}">${item.status === 'active' ? 'Đang hiển thị' : 'Ẩn'}</span>
+          <div class="flex gap-2" id="actions-${item.id}">
+            ${deletingId === item.id ? `
+              <div class="confirm-bar">
+                <span class="text-xs">Xóa?</span>
+                <button class="text-xs font-bold underline" onclick="confirmDelete('media', ${item.id})">Xóa</button>
+                <button class="text-xs" onclick="cancelDelete()">Hủy</button>
+              </div>
+            ` : `
+              <button class="btn-secondary p-2" onclick="window.location.href='${apiBaseUrl}/media/${item.id}/edit'"><i data-lucide="edit" style="width:14px;height:14px"></i></button>
+              <button class="btn-secondary p-2" onclick="startDelete(${item.id})"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button>
+            `}
+          </div>
+        </div>
+      </div>`;
+        }).join('');
+        lucide.createIcons({nodes: [list]});
+    }
+
+    function renderRecentActivity() {
+        const container = document.getElementById('recent-activity');
+        if (!container) return;
+        const allItems = [
+            ...(allData.news || []).map(item => ({
+                ...item,
+                type: 'news',
+                typeLabel: 'Tin tức',
+                icon: 'newspaper',
+                createdAt: item.createdAt
+            })),
+            ...(allData.characters || []).map(item => ({
+                ...item,
+                type: 'character',
+                typeLabel: 'Nhân vật',
+                icon: 'user',
+                createdAt: item.createdAt
+            })),
+            ...(allData.rankings || []).map(item => ({
+                ...item,
+                type: 'ranking',
+                typeLabel: 'Xếp hạng',
+                icon: 'trophy',
+                createdAt: item.createdAt
+            })),
+            ...(allData.media || []).map(item => ({
+                ...item,
+                type: 'media',
+                typeLabel: 'Media',
+                icon: 'film',
+                createdAt: item.createdAt
+            }))
+        ];
+        const recent = allItems.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 5);
+        if (recent.length === 0) {
+            container.innerHTML = `<div class="text-sm text-center py-8" style="color:var(--secondary)">Chưa có hoạt động nào.</div>`;
+            return;
+        }
+        container.innerHTML = recent.map(item => {
+            const title = item.title || item.name || 'Không tiêu đề';
+            return `<div class="flex items-center gap-3 p-3 rounded-xl" style="background:rgba(255,255,255,0.03)">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(108,92,231,0.15)"><i data-lucide="${item.icon}" style="width:16px;height:16px;color:var(--primary)"></i></div>
+      <div class="flex-1"><div class="text-sm font-semibold" style="color:var(--text)">${esc(title)}</div><div class="text-xs" style="color:var(--secondary)">${item.typeLabel} · ${formatDate(item.createdAt)}</div></div>
+    </div>`;
+        }).join('');
+        lucide.createIcons({nodes: [container]});
+    }
+
+    // ===== MODAL =====
+    function openModal(type, item = null) {
+        window.location.href = item
+            ? `${apiBaseUrl}/${type}/${item.id}/edit`
+            : `${apiBaseUrl}/${type}/create`;
+    }
+
+    function closeModal() {
+        // Not used with server-side forms
+    }
+
+    async function handleFormSubmit(e) {
+        // Not used with server-side forms
+    }
+
+    function startDelete(id) {
+        deletingId = id;
+        renderCurrentPage();
+    }
+
+    function cancelDelete() {
+        deletingId = null;
+        renderCurrentPage();
+    }
+
+    async function confirmDelete(type, id) {
+        const endpoint = `/${type}/${id}`;
+        const success = await deleteFromAPI(endpoint);
+        if (success) {
+            showToast('Đã xóa thành công!', 'success');
+            loadAllData();
+        } else {
+            showToast('Lỗi xóa!', 'error');
+        }
+        deletingId = null;
+    }
+
+    // ===== THEME =====
+    function setTheme(theme, el) {
+        currentTheme = theme;
+        document.body.className = 'h-full';
+        if (theme !== 'dark') document.body.classList.add('theme-' + theme);
+        document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('selected'));
+        if (el) el.classList.add('selected');
+    }
+
+    // ===== UTILITIES =====
+    function esc(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
+    }
+
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.background = type === 'success' ? '#00b894' : '#e74c3c';
+        toast.style.color = '#fff';
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+
+    // ===== INIT =====
+    async function loadAllData() {
+        const news = await fetchFromAPI('/news');
+        const characters = await fetchFromAPI('/characters');
+        const rankings = await fetchFromAPI('/rankings');
+        const media = await fetchFromAPI('/media');
+        const analytics = await fetchFromAPI('/analytics');
+
+        allData = {
+            news: news || [],
+            characters: characters || [],
+            rankings: rankings || [],
+            media: media || [],
+            analytics: analytics || null
+        };
+
+        renderCurrentPage();
+        renderRecentActivity();
+        if (currentPage === 'dashboard') renderAnalytics();
+    }
+
+    function renderAnalytics() {
+        if (!allData.analytics) return;
+        const an = allData.analytics;
+
+        // Update stat cards
+        const updateStat = (id, value) => {
+            const el = document.getElementById(id);
+            if (el && el.querySelector('.text-2xl')) {
+                el.querySelector('.text-2xl').textContent = value;
+            }
+        };
+
+        updateStat('stat-views', an.pageViews || '24,580');
+        updateStat('stat-users', an.users || '3,842');
+        updateStat('stat-time', an.avgSessionDuration || '4:32');
+        updateStat('stat-engagement', an.engagementRate || '68.2%');
+
+        renderMainChart(7);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        renderMiniChart('chart-views', 8);
+        renderMiniChart('chart-users', 8);
+        renderMiniChart('chart-time', 8);
+        renderMiniChart('chart-engage', 8);
+        renderMainChart(7);
+        loadAllData();
+        setInterval(loadAllData, 30000); // Refresh data every 30 seconds
+    });
+</script>
+<script>(function () {
+    function c() {
+        var b = a.contentDocument || a.contentWindow.document;
+        if (b) {
+            var d = b.createElement('script');
+            d.innerHTML = "window.__CF$cv$params={r:'9dd74a300174fd23',t:'MTc3MzcwMTE0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName('head')[0].appendChild(d)
+        }
+    }
+
+    if (document.body) {
+        var a = document.createElement('iframe');
+        a.height = 1;
+        a.width = 1;
+        a.style.position = 'absolute';
+        a.style.top = 0;
+        a.style.left = 0;
+        a.style.border = 'none';
+        a.style.visibility = 'hidden';
+        document.body.appendChild(a);
+        if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else {
+            var e = document.onreadystatechange || function () {
+            };
+            document.onreadystatechange = function (b) {
+                e(b);
+                'loading' !== document.readyState && (document.onreadystatechange = e, c())
+            }
+        }
+    }
+})();</script>
+</body>
+</html>

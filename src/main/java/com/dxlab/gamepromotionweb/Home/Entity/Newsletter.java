@@ -1,4 +1,4 @@
-package com.dxlab.gamepromotionweb.Model;
+package com.dxlab.gamepromotionweb.Home.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

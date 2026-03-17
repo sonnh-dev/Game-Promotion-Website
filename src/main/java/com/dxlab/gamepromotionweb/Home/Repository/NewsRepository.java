@@ -1,6 +1,6 @@
-package com.dxlab.gamepromotionweb.Repository;
+package com.dxlab.gamepromotionweb.Home.Repository;
 
-import com.dxlab.gamepromotionweb.Model.News;
+import com.dxlab.gamepromotionweb.Home.Entity.News;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

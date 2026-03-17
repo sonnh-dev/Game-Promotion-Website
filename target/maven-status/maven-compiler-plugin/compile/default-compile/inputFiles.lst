@@ -1,0 +1,14 @@
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Admin\config\SecurityConfig.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Admin\controller\AnalyticsController.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Admin\controller\HomeController.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Admin\Entity\Admin.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Admin\repository\AdminsRepository.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Admin\service\AdminService.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Admin\service\AnalyticsService.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\GamePromotionWebApplication.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Home\Entity\Media.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Home\Entity\News.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Home\Entity\Newsletter.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Home\Repository\MediaRepository.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Home\Repository\NewsletterRepository.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\Home\Repository\NewsRepository.java

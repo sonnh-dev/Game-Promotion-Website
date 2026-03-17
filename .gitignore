@@ -10,6 +10,11 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+#google analytics
+credentials.json
+*.json
+config/credentials.json
+
 # Package Files #
 *.jar
 *.war
