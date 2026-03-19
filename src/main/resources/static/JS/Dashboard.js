@@ -64,28 +64,17 @@ function normalizeOverviewDaily(overviewDaily) {
     return out;
 }
 
-function calcAggregateFromDaily(daily) {
-    const n = daily.length || 1;
-    let users = 0;
-    let pageViews = 0;
-    let sessions = 0;
-    let totalAvgSessionDurationSec = 0;
-    let totalEngagementRate = 0;
-
-    for (const d of daily) {
-        users += d.users;
-        pageViews += d.pageViews;
-        sessions += d.sessions;
-        totalAvgSessionDurationSec += d.avgSessionDurationSec;
-        totalEngagementRate += d.engagementRate;
-    }
-
+function normalizeOverview(overview, overviewDaily) {
+    const fallback = Array.isArray(overviewDaily) && overviewDaily.length > 0
+        ? overviewDaily[overviewDaily.length - 1]
+        : null;
+    const raw = overview && typeof overview === 'object' ? overview : {};
     return {
-        users,
-        pageViews,
-        sessions,
-        avgSessionDurationSec: totalAvgSessionDurationSec / n,
-        engagementRate: totalEngagementRate / n
+        users: Number(raw.users ?? fallback?.users ?? 0),
+        pageViews: Number(raw.pageViews ?? fallback?.pageViews ?? 0),
+        sessions: Number(raw.sessions ?? fallback?.sessions ?? 0),
+        avgSessionDurationSec: Number(raw.avgSessionDuration ?? fallback?.avgSessionDurationSec ?? 0),
+        engagementRate: Number(raw.engagementRate ?? fallback?.engagementRate ?? 0)
     };
 }
 
@@ -132,16 +121,16 @@ function renderHeaderDate() {
     el.textContent = today.toLocaleDateString('vi-VN', opts);
 }
 
-function renderMetricCards({aggregate, growth}) {
+function renderMetricCards({overview, growth}) {
     for (const m of METRICS) {
         const valueEl = document.getElementById(`value-${m.key}`);
         const changeEl = document.getElementById(`change-${m.key}`);
         if (!valueEl || !changeEl) continue;
 
         let rawValue;
-        if (m.key === 'avgTime') rawValue = aggregate.avgSessionDurationSec;
-        else if (m.key === 'engagement') rawValue = aggregate.engagementRate;
-        else rawValue = aggregate[m.key] ?? 0;
+        if (m.key === 'avgTime') rawValue = overview.avgSessionDurationSec;
+        else if (m.key === 'engagement') rawValue = overview.engagementRate;
+        else rawValue = overview[m.key] ?? 0;
 
         valueEl.textContent = m.formatValue(rawValue);
 
@@ -323,6 +312,7 @@ export async function initDashboard(options = {}) {
     }
 
     const overviewDaily = normalizeOverviewDaily(apiData?.overview?.overviewDaily);
+    const overview = normalizeOverview(apiData?.overview?.overview, overviewDaily);
     const growth = apiData?.overview?.growth || {};
     const sources = apiData?.sources || [];
 
@@ -337,8 +327,7 @@ export async function initDashboard(options = {}) {
 
     const renderAll = () => {
         const daily = getDailyForRange();
-        const aggregate = calcAggregateFromDaily(daily);
-        renderMetricCards({aggregate, growth});
+        renderMetricCards({overview, growth});
         renderChart({daily, metricKey, rangeDays});
         renderSourcesAndDonut({sources});
         setActiveRangeButton(rangeDays);

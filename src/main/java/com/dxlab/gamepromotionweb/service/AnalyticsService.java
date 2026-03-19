@@ -11,6 +11,7 @@ import java.util.*;
 public class AnalyticsService {
     private final BetaAnalyticsDataClient analyticsDataClient;
     private static final String PROPERTY_ID = "528584350";
+    private static final DateTimeFormatter GA_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     public AnalyticsService(BetaAnalyticsDataClient client) {
         this.analyticsDataClient = client;
@@ -28,10 +29,13 @@ public class AnalyticsService {
                 .addMetrics(Metric.newBuilder().setName("averageSessionDuration"))
                 .addMetrics(Metric.newBuilder().setName("engagementRate"))
                 .addMetrics(Metric.newBuilder().setName("sessions"))
+                .addOrderBys(OrderBy.newBuilder()
+                        .setDimension(OrderBy.DimensionOrderBy.newBuilder()
+                                .setDimensionName("date")))
                 .build();
 
         RunReportResponse response = analyticsDataClient.runReport(request);
-        List<Map<String, Object>> overviewDaily = new LinkedList<>();
+        List<Map<String, Object>> overviewDaily = new ArrayList<>();
 
         for (Row row : response.getRowsList()) {
             Map<String, Object> day = new HashMap<>();
@@ -45,58 +49,35 @@ public class AnalyticsService {
             overviewDaily.add(day);
         }
 
-        // --- Tổng hợp overview cho 30 ngày ---
-        int totalUsers = 0, totalPageViews = 0, totalSessions = 0;
-        double totalDuration = 0, totalEngagement = 0;
-
-        for (Map<String, Object> day : overviewDaily) {
-            totalUsers += (Integer) day.get("users");
-            totalPageViews += (Integer) day.get("pageViews");
-            totalSessions += (Integer) day.get("sessions");
-            totalDuration += (Double) day.get("avgSessionDuration");
-            totalEngagement += (Double) day.get("engagementRate");
-        }
-        Map<String, Object> overview = new HashMap<>();
-        overview.put("users", totalUsers);
-        overview.put("pageViews", totalPageViews);
-        overview.put("sessions", totalSessions);
-        overview.put("avgSessionDuration", totalDuration / overviewDaily.size());
-        overview.put("engagementRate", totalEngagement / overviewDaily.size());
-
-        // --- growth hôm nay/ hôm qua ---
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
+        String todayKey = today.format(GA_DATE_FORMAT);
+        String yesterdayKey = yesterday.format(GA_DATE_FORMAT);
 
-        Map<String, Double> todayMetrics = new HashMap<>();
-        Map<String, Double> yesterdayMetrics = new HashMap<>();
+        Map<String, Object> latestDay = overviewDaily.isEmpty() ? null : overviewDaily.get(overviewDaily.size() - 1);
+        Map<String, Object> previousDay = overviewDaily.size() > 1 ? overviewDaily.get(overviewDaily.size() - 2) : null;
+        Map<String, Object> todayDay = null;
+        Map<String, Object> yesterdayDay = null;
 
-        String[] keys = {"sessions", "users", "pageViews", "avgSessionDuration", "engagementRate"};
-
-        for (String k : keys) {
-            todayMetrics.put(k, 0.0);
-            yesterdayMetrics.put(k, 0.0);
-        }
-
-        // lấy dữ liệu hôm nay và hôm qua
-        for (Map<String, Object> d : overviewDaily) {
-            LocalDate dDate = LocalDate.parse((String) d.get("date"), DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-            for (String k : keys) {
-                double value = 0.0;
-                Object obj = d.get(k);
-                if (obj instanceof Number) {
-                    value = ((Number) obj).doubleValue();
-                }
-
-                if (dDate.equals(today)) todayMetrics.put(k, value);
-                else if (dDate.equals(yesterday)) yesterdayMetrics.put(k, value);
+        for (Map<String, Object> day : overviewDaily) {
+            String date = (String) day.get("date");
+            if (todayKey.equals(date)) {
+                todayDay = day;
+            } else if (yesterdayKey.equals(date)) {
+                yesterdayDay = day;
             }
         }
 
+        Map<String, Object> effectiveToday = todayDay != null ? todayDay : latestDay;
+        Map<String, Object> effectiveYesterday = yesterdayDay != null ? yesterdayDay : previousDay;
+
+        Map<String, Object> overview = mapOverviewMetrics(effectiveToday);
+
+        String[] keys = {"sessions", "users", "pageViews", "avgSessionDuration", "engagementRate"};
         Map<String, Double> growth = new HashMap<>();
         for (String k : keys) {
-            double yVal = yesterdayMetrics.get(k);
-            double tVal = todayMetrics.get(k);
+            double tVal = getNumericMetric(effectiveToday, k);
+            double yVal = getNumericMetric(effectiveYesterday, k);
             double g = (yVal != 0.0) ? ((tVal - yVal) / yVal * 100.0) : 0.0;
             growth.put(k, g);
         }
@@ -107,6 +88,24 @@ public class AnalyticsService {
         result.put("growth", growth);
 
         return result;
+    }
+
+    private Map<String, Object> mapOverviewMetrics(Map<String, Object> day) {
+        Map<String, Object> overview = new HashMap<>();
+        overview.put("users", day == null ? 0 : ((Number) day.getOrDefault("users", 0)).intValue());
+        overview.put("pageViews", day == null ? 0 : ((Number) day.getOrDefault("pageViews", 0)).intValue());
+        overview.put("sessions", day == null ? 0 : ((Number) day.getOrDefault("sessions", 0)).intValue());
+        overview.put("avgSessionDuration", day == null ? 0.0 : ((Number) day.getOrDefault("avgSessionDuration", 0.0)).doubleValue());
+        overview.put("engagementRate", day == null ? 0.0 : ((Number) day.getOrDefault("engagementRate", 0.0)).doubleValue());
+        return overview;
+    }
+
+    private double getNumericMetric(Map<String, Object> day, String key) {
+        if (day == null) {
+            return 0.0;
+        }
+        Object value = day.get(key);
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
     }
 
     public List<Map<String, Object>> getTraffic(int days) {

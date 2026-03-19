@@ -1,7 +1,7 @@
 D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\config\GoogleAnalyticsConfig.java
 D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\config\SecurityConfig.java
 D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\controller\AuthController.java
-D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\controller\DashboardController.java
+D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\controller\DashboardAPIController.java
 D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\controller\DashboardPagesController.java
 D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\controller\HomeController.java
 D:\FPT\Term_6\Game Promotion Website\src\main\java\com\dxlab\gamepromotionweb\controller\ReactController.java
