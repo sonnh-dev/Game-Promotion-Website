@@ -3,6 +3,8 @@ package com.dxlab.gamepromotionweb.service;
 import com.google.analytics.data.v1beta.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -14,12 +16,13 @@ public class AnalyticsService {
         this.analyticsDataClient = client;
     }
 
-    public Map<String, Object> getOverview(int days) {
+    public Map<String, Object> getOverview() {
         RunReportRequest request = RunReportRequest.newBuilder()
                 .setProperty("properties/" + PROPERTY_ID)
                 .addDateRanges(DateRange.newBuilder()
-                        .setStartDate(days + "daysAgo")
+                        .setStartDate("30daysAgo")
                         .setEndDate("today"))
+                .addDimensions(Dimension.newBuilder().setName("date"))
                 .addMetrics(Metric.newBuilder().setName("activeUsers"))
                 .addMetrics(Metric.newBuilder().setName("screenPageViews"))
                 .addMetrics(Metric.newBuilder().setName("averageSessionDuration"))
@@ -28,25 +31,82 @@ public class AnalyticsService {
                 .build();
 
         RunReportResponse response = analyticsDataClient.runReport(request);
+        List<Map<String, Object>> overviewDaily = new LinkedList<>();
 
-        Map<String, Object> data = new HashMap<>();
-        if (response.getRowsCount() == 0) {
-            data.put("users", 0);
-            data.put("pageViews", 0);
-            data.put("avgSessionDuration", 0);
-            data.put("engagementRate", 0);
-            data.put("sessions", 0);
-            return data;
+        for (Row row : response.getRowsList()) {
+            Map<String, Object> day = new HashMap<>();
+            String date = row.getDimensionValues(0).getValue(); // yyyyMMdd
+            day.put("date", date);
+            day.put("users", Integer.parseInt(row.getMetricValues(0).getValue()));
+            day.put("pageViews", Integer.parseInt(row.getMetricValues(1).getValue()));
+            day.put("avgSessionDuration", Double.parseDouble(row.getMetricValues(2).getValue()));
+            day.put("engagementRate", Double.parseDouble(row.getMetricValues(3).getValue()));
+            day.put("sessions", Integer.parseInt(row.getMetricValues(4).getValue()));
+            overviewDaily.add(day);
         }
-        Row row = response.getRows(0);
 
-        data.put("users", Integer.parseInt(row.getMetricValues(0).getValue()));
-        data.put("pageViews", Integer.parseInt(row.getMetricValues(1).getValue()));
-        data.put("avgSessionDuration", Double.parseDouble(row.getMetricValues(2).getValue()));
-        data.put("engagementRate", Double.parseDouble(row.getMetricValues(3).getValue()));
-        data.put("sessions", Integer.parseInt(row.getMetricValues(4).getValue()));
+        // --- Tổng hợp overview cho 30 ngày ---
+        int totalUsers = 0, totalPageViews = 0, totalSessions = 0;
+        double totalDuration = 0, totalEngagement = 0;
 
-        return data;
+        for (Map<String, Object> day : overviewDaily) {
+            totalUsers += (Integer) day.get("users");
+            totalPageViews += (Integer) day.get("pageViews");
+            totalSessions += (Integer) day.get("sessions");
+            totalDuration += (Double) day.get("avgSessionDuration");
+            totalEngagement += (Double) day.get("engagementRate");
+        }
+        Map<String, Object> overview = new HashMap<>();
+        overview.put("users", totalUsers);
+        overview.put("pageViews", totalPageViews);
+        overview.put("sessions", totalSessions);
+        overview.put("avgSessionDuration", totalDuration / overviewDaily.size());
+        overview.put("engagementRate", totalEngagement / overviewDaily.size());
+
+        // --- growth hôm nay/ hôm qua ---
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = today.minusDays(1);
+
+        Map<String, Double> todayMetrics = new HashMap<>();
+        Map<String, Double> yesterdayMetrics = new HashMap<>();
+
+        String[] keys = {"sessions", "users", "pageViews", "avgSessionDuration", "engagementRate"};
+
+        for (String k : keys) {
+            todayMetrics.put(k, 0.0);
+            yesterdayMetrics.put(k, 0.0);
+        }
+
+        // lấy dữ liệu hôm nay và hôm qua
+        for (Map<String, Object> d : overviewDaily) {
+            LocalDate dDate = LocalDate.parse((String) d.get("date"), DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+            for (String k : keys) {
+                double value = 0.0;
+                Object obj = d.get(k);
+                if (obj instanceof Number) {
+                    value = ((Number) obj).doubleValue();
+                }
+
+                if (dDate.equals(today)) todayMetrics.put(k, value);
+                else if (dDate.equals(yesterday)) yesterdayMetrics.put(k, value);
+            }
+        }
+
+        Map<String, Double> growth = new HashMap<>();
+        for (String k : keys) {
+            double yVal = yesterdayMetrics.get(k);
+            double tVal = todayMetrics.get(k);
+            double g = (yVal != 0.0) ? ((tVal - yVal) / yVal * 100.0) : 0.0;
+            growth.put(k, g);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("overview", overview);
+        result.put("overviewDaily", overviewDaily);
+        result.put("growth", growth);
+
+        return result;
     }
 
     public List<Map<String, Object>> getTraffic(int days) {
@@ -126,12 +186,10 @@ public class AnalyticsService {
     // ================= COMBINE ALL  =================
     public Map<String, Object> getDashboard() {
         Map<String, Object> data = new HashMap<>();
-        data.put("overview", getOverview(1));
-        data.put("overview30days", getOverview(30));
+        data.put("overview", getOverview());
         data.put("traffic", getTraffic(7));
         data.put("sources", getTrafficSource(7));
 
         return data;
     }
 }
-

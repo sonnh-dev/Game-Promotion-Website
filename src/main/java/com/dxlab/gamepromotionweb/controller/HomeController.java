@@ -9,9 +9,9 @@ import java.security.Principal;
 @Controller
 public class HomeController {
 
-    @GetMapping("/home")
-    public String home(Model model) {
-        return "home";
+    @GetMapping({"/home", "/home/"})
+    public String home() {
+        return "forward:/home/index.html";
     }
 
     @GetMapping("/dashboard")

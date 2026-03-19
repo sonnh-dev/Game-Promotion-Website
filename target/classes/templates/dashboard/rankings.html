@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="page" id="page-rankings" class="page-content hidden">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold" style="color: var(--text);">Bảng xếp hạng</h1>
+        <button class="btn-primary flex items-center gap-2" onclick="openModal('rankings')">
+            <i data-lucide="plus" style="width:16px;height:16px"></i>
+            Thêm mục
+        </button>
+    </div>
+    <div class="card overflow-hidden">
+        <table class="w-full text-sm">
+            <thead>
+            <tr style="background: rgba(255,255,255,0.04);">
+                <th class="text-left p-4 font-semibold" style="color: var(--secondary);">Hạng</th>
+                <th class="text-left p-4 font-semibold" style="color: var(--secondary);">Tên</th>
+                <th class="text-left p-4 font-semibold" style="color: var(--secondary);">Điểm</th>
+                <th class="text-left p-4 font-semibold" style="color: var(--secondary);">Danh mục</th>
+                <th class="text-right p-4 font-semibold" style="color: var(--secondary);">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody id="rankings-body">
+            <tr>
+                <td colspan="5" class="p-8 text-center" style="color: var(--secondary);">Chưa có dữ liệu xếp hạng</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>
+

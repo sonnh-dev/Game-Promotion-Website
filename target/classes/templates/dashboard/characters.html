@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="page" id="page-characters" class="page-content hidden">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold" style="color: var(--text);">Quản lý nhân vật</h1>
+        <button class="btn-primary flex items-center gap-2" onclick="openModal('characters')">
+            <i data-lucide="plus" style="width:16px;height:16px"></i>
+            Thêm nhân vật
+        </button>
+    </div>
+    <div id="characters-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="card p-8 text-center col-span-full" style="color: var(--secondary);">
+            <i data-lucide="users" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+            <p>Chưa có nhân vật nào. Nhấn "Thêm nhân vật" để bắt đầu!</p>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+
