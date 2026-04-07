@@ -52,6 +52,24 @@ CREATE TABLE `media`
 ) ENGINE = InnoDB;
 
 -- =====================
+-- Table: character
+-- =====================
+DROP TABLE IF EXISTS `character`;
+CREATE TABLE `character`
+(
+    `id`          INT          NOT NULL,
+    `name`        VARCHAR(45)  NOT NULL,
+    `media_id`    INT          NOT NULL,
+    `description` TEXT         NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_character_media`
+        FOREIGN KEY (`media_id`)
+            REFERENCES `media` (`id`)
+            ON DELETE RESTRICT
+            ON UPDATE CASCADE
+) ENGINE = InnoDB;
+
+-- =====================
 -- Table: newsletter
 -- =====================
 DROP TABLE IF EXISTS `newsletter`;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Bảng điều khiển quản trị</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&amp;display=swap"
@@ -64,8 +64,8 @@
         <!-- Header -->
         <header class="flex items-center justify-between mb-8 animate-in" style="animation-delay: 0.05s;">
             <div>
-                <h1 id="dashboard-title" class="text-2xl font-bold text-white tracking-tight">Project Dashboard</h1>
-                <p id="greeting-text" class="text-sm mt-1" style="color:rgba(255,255,255,0.4);">Chào mừng trở lại!</p>
+                <h1 id="dashboard-title" class="text-2xl font-bold text-white tracking-tight">Bảng điều khiển dự án</h1>
+                <p id="greeting-text" class="text-sm mt-1" style="color:rgba(255,255,255,0.4);">Chào mừng bạn quay lại.</p>
             </div>
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-2 px-4 py-2 rounded-xl"
@@ -75,6 +75,51 @@
                 </div>
             </div>
         </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+            <div class="rounded-2xl px-5 py-4"
+                 style="background:#111827; border:1px solid rgba(255,255,255,0.06);">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <p class="text-xs uppercase tracking-widest" style="color:rgba(255,255,255,0.35);">Realtime</p>
+                        <p class="text-sm text-white mt-1">30 phút gần nhất</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                         style="background: rgba(16,185,129,0.12);">
+                        <i data-lucide="activity" style="width:18px;height:18px;color:#34d399;"></i>
+                    </div>
+                </div>
+                <div class="flex items-end gap-6 mt-4">
+                    <div>
+                        <div id="realtime-active-users" class="text-2xl font-bold tracking-tight text-white">0</div>
+                        <div class="text-xs text-white/35 mt-1">Người dùng đang hoạt động</div>
+                    </div>
+                    <div>
+                        <div id="realtime-pageviews" class="text-2xl font-bold tracking-tight text-white">0</div>
+                        <div class="text-xs text-white/35 mt-1">Lượt xem màn hình</div>
+                    </div>
+                </div>
+                <div id="realtime-updated" class="text-xs mt-3" style="color:rgba(255,255,255,0.35);">30 phút gần nhất</div>
+            </div>
+
+            <div class="rounded-2xl px-5 py-4"
+                 style="background:#111827; border:1px solid rgba(255,255,255,0.06);">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <p class="text-xs uppercase tracking-widest" style="color:rgba(255,255,255,0.35);">Báo cáo ngày</p>
+                        <p class="text-sm text-white mt-1">Dữ liệu này không phải realtime của GA4</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                         style="background: rgba(99,102,241,0.12);">
+                        <i data-lucide="calendar-range" style="width:18px;height:18px;color:#818cf8;"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div id="daily-last-date" class="text-2xl font-bold tracking-tight text-white">Chưa có dữ liệu</div>
+                    <div class="text-xs text-white/35 mt-1">Ngày mới nhất mà GA4 đã xử lý cho biểu đồ theo ngày</div>
+                </div>
+            </div>
+        </div>
         <!-- Metric Cards -->
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="metric-cards">

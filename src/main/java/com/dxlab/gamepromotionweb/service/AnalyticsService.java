@@ -86,6 +86,8 @@ public class AnalyticsService {
         result.put("overview", overview);
         result.put("overviewDaily", overviewDaily);
         result.put("growth", growth);
+        result.put("latestProcessedDate", latestDay == null ? null : latestDay.get("date"));
+        result.put("requestedDate", todayKey);
 
         return result;
     }
@@ -182,12 +184,37 @@ public class AnalyticsService {
         return result;
     }
 
+    public Map<String, Object> getRealtime() {
+        RunRealtimeReportRequest request = RunRealtimeReportRequest.newBuilder()
+                .setProperty("properties/" + PROPERTY_ID)
+                .addMetrics(Metric.newBuilder().setName("activeUsers"))
+                .addMetrics(Metric.newBuilder().setName("screenPageViews"))
+                .build();
+
+        RunRealtimeReportResponse response = analyticsDataClient.runRealtimeReport(request);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("activeUsers", 0);
+        result.put("screenPageViews", 0);
+        result.put("updatedAt", java.time.Instant.now().toString());
+
+        if (response.getRowsCount() == 0) {
+            return result;
+        }
+
+        Row row = response.getRows(0);
+        result.put("activeUsers", Integer.parseInt(row.getMetricValues(0).getValue()));
+        result.put("screenPageViews", Integer.parseInt(row.getMetricValues(1).getValue()));
+        return result;
+    }
+
     // ================= COMBINE ALL  =================
     public Map<String, Object> getDashboard() {
         Map<String, Object> data = new HashMap<>();
         data.put("overview", getOverview());
         data.put("traffic", getTraffic(7));
         data.put("sources", getTrafficSource(7));
+        data.put("realtime", getRealtime());
 
         return data;
     }

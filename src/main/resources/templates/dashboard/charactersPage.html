@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi" class="h-full" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" class="h-full" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
                      style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
                     <i data-lucide="zap" style="width:18px;height:18px;color:#fff;"></i>
                 </div>
-                <span class="text-white font-bold text-base tracking-tight">Vortex</span>
+                <span class="text-white font-bold text-base tracking-tight">DXLAB</span>
             </div>
             <p class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: rgba(255,255,255,0.3);">
                 Menu</p>
@@ -59,8 +59,8 @@
     <main class="flex-1 h-full overflow-y-auto overflow-x-hidden p-6 lg:p-8" style="scrollbar-gutter: stable;">
         <header class="flex items-center justify-between mb-8 animate-in" style="animation-delay: 0.05s;">
             <div>
-                <h1 class="text-2xl font-bold text-white tracking-tight">Nhân vật</h1>
-                <p class="text-sm mt-1" style="color:rgba(255,255,255,0.4);">Quản lý nhân vật hiển thị trên website</p>
+                <h1 class="text-2xl font-bold text-white tracking-tight">CRUD Nhân vật</h1>
+                <p class="text-sm mt-1" style="color:rgba(255,255,255,0.4);">Quản lý nhân vật và liên kết media bằng Thymeleaf</p>
             </div>
             <div class="flex items-center gap-2 px-4 py-2 rounded-xl"
                  style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);">
@@ -70,24 +70,164 @@
             </div>
         </header>
 
-        <section class="rounded-2xl p-6 animate-in"
-                 style="background: #111827; border: 1px solid rgba(255,255,255,0.06); animation-delay: 0.15s;">
-            <div class="flex items-center justify-between gap-4 flex-wrap">
-                <div>
-                    <h2 class="text-sm font-semibold text-white">Danh sách nhân vật</h2>
-                    <p class="text-xs mt-1" style="color:rgba(255,255,255,0.35);">Trang này đã có route, phần CRUD bạn có thể làm tiếp.</p>
+        <div class="space-y-6">
+            <div th:if="${successMessage}" class="rounded-2xl px-4 py-3 text-sm"
+                 style="background: rgba(16,185,129,0.12); color: #a7f3d0; border: 1px solid rgba(16,185,129,0.2);"
+                 th:text="${successMessage}"></div>
+
+            <div th:if="${errorMessage}" class="rounded-2xl px-4 py-3 text-sm"
+                 style="background: rgba(239,68,68,0.12); color: #fecaca; border: 1px solid rgba(239,68,68,0.2);"
+                 th:text="${errorMessage}"></div>
+
+            <section class="rounded-2xl p-6 animate-in"
+                     style="background: #111827; border: 1px solid rgba(255,255,255,0.06); animation-delay: 0.15s;">
+                <div class="flex items-center justify-between gap-4 flex-wrap mb-5">
+                    <div>
+                        <h2 class="text-sm font-semibold text-white"
+                            th:text="${characterEditing} ? 'Cập nhật nhân vật' : 'Thêm nhân vật mới'">Thêm nhân vật mới</h2>
+                        <p class="text-xs mt-1" style="color:rgba(255,255,255,0.35);">
+                            Mỗi nhân vật cần gắn với một media có sẵn trong hệ thống.
+                        </p>
+                    </div>
+                    <a th:if="${characterEditing}" href="/dashboard/characters" class="tab-btn"
+                       style="background: rgba(255,255,255,0.08); color:#fff;">
+                        Tạo form mới
+                    </a>
                 </div>
-                <button class="tab-btn" style="background: #6366f1; color:#fff;">
-                    <span class="inline-flex items-center gap-2">
-                        <i data-lucide="plus" style="width:14px;height:14px;"></i>
-                        Thêm nhân vật
-                    </span>
-                </button>
-            </div>
-            <div class="mt-6 text-sm" style="color:rgba(255,255,255,0.5);">
-                Chưa có dữ liệu để hiển thị.
-            </div>
-        </section>
+
+                <div th:if="${#lists.isEmpty(mediaOptions)}" class="rounded-2xl px-4 py-3 text-sm mb-5"
+                     style="background: rgba(245,158,11,0.12); color: #fde68a; border: 1px solid rgba(245,158,11,0.2);">
+                    Bạn cần tạo ít nhất 1 media trước khi thêm nhân vật.
+                </div>
+
+                <form th:object="${characterForm}"
+                      th:action="${characterEditing} ? @{/dashboard/characters/{id}(id=${editingCharacterId})} : @{/dashboard/characters}"
+                      method="post"
+                      class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2"
+                               style="color: rgba(255,255,255,0.35);">ID</label>
+                        <input th:field="*{id}" type="number" min="1" th:readonly="${characterEditing}"
+                               class="w-full rounded-xl px-4 py-3 text-sm text-white outline-none"
+                               style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                        <p th:if="${#fields.hasErrors('id')}" th:errors="*{id}" class="text-xs mt-2"
+                           style="color:#fca5a5;"></p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2"
+                               style="color: rgba(255,255,255,0.35);">Tên nhân vật</label>
+                        <input th:field="*{name}" type="text" placeholder="Nhập tên nhân vật"
+                               class="w-full rounded-xl px-4 py-3 text-sm text-white outline-none"
+                               style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-xs mt-2"
+                           style="color:#fca5a5;"></p>
+                    </div>
+
+                    <div class="lg:col-span-2">
+                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2"
+                               style="color: rgba(255,255,255,0.35);">Media</label>
+                        <select th:field="*{mediaId}" th:disabled="${#lists.isEmpty(mediaOptions)}"
+                                class="w-full rounded-xl px-4 py-3 text-sm text-white outline-none"
+                                style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                            <option value="" style="color:#111827;">Chọn media</option>
+                            <option th:each="media : ${mediaOptions}"
+                                    th:value="${media.id}"
+                                    th:text="${'ID ' + media.id + ' | ' + media.type + ' | ' + media.entityType + ' | ' + media.url}"
+                                    style="color:#111827;">
+                                ID 1
+                            </option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('mediaId')}" th:errors="*{mediaId}" class="text-xs mt-2"
+                           style="color:#fca5a5;"></p>
+                    </div>
+
+                    <div class="lg:col-span-2">
+                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2"
+                               style="color: rgba(255,255,255,0.35);">Mô tả</label>
+                        <textarea th:field="*{description}" rows="7" placeholder="Nhập mô tả nhân vật"
+                                  class="w-full rounded-xl px-4 py-3 text-sm text-white outline-none resize-y"
+                                  style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);"></textarea>
+                        <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-xs mt-2"
+                           style="color:#fca5a5;"></p>
+                    </div>
+
+                    <div class="lg:col-span-2 flex items-center gap-3 flex-wrap">
+                        <button type="submit" class="tab-btn" th:disabled="${#lists.isEmpty(mediaOptions)}"
+                                style="background: #6366f1; color:#fff;">
+                            <span th:text="${characterEditing} ? 'Cập nhật nhân vật' : 'Thêm nhân vật'">Thêm nhân vật</span>
+                        </button>
+                        <a href="/dashboard/characters" class="tab-btn"
+                           style="background: rgba(255,255,255,0.08); color:#fff;">
+                            Làm mới
+                        </a>
+                    </div>
+                </form>
+            </section>
+
+            <section class="rounded-2xl p-6 animate-in"
+                     style="background: #111827; border: 1px solid rgba(255,255,255,0.06); animation-delay: 0.2s;">
+                <div class="flex items-center justify-between gap-4 flex-wrap mb-5">
+                    <div>
+                        <h2 class="text-sm font-semibold text-white">Danh sách nhân vật</h2>
+                        <p class="text-xs mt-1" style="color:rgba(255,255,255,0.35);">
+                            Tổng số bản ghi: <span th:text="${#lists.size(characterItems)}">0</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(characterItems)}" class="rounded-2xl px-4 py-8 text-center text-sm"
+                     style="background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.45);">
+                    Chưa có nhân vật nào.
+                </div>
+
+                <div th:if="${!#lists.isEmpty(characterItems)}" class="overflow-x-auto">
+                    <table class="w-full min-w-[900px] text-sm">
+                        <thead>
+                        <tr style="color: rgba(255,255,255,0.4);">
+                            <th class="text-left font-medium py-3 pr-4">ID</th>
+                            <th class="text-left font-medium py-3 pr-4">Tên</th>
+                            <th class="text-left font-medium py-3 pr-4">Media ID</th>
+                            <th class="text-left font-medium py-3 pr-4">Media URL</th>
+                            <th class="text-left font-medium py-3 pr-4">Mô tả</th>
+                            <th class="text-left font-medium py-3">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${characterItems}" style="border-top: 1px solid rgba(255,255,255,0.06);">
+                            <td class="py-4 pr-4 text-white/80" th:text="${item.id}">1</td>
+                            <td class="py-4 pr-4 text-white font-medium" th:text="${item.name}">Nhân vật A</td>
+                            <td class="py-4 pr-4 text-white/80" th:text="${item.media.id}">1</td>
+                            <td class="py-4 pr-4">
+                                <a th:href="${item.media.url}" target="_blank"
+                                   class="text-sky-300 hover:text-sky-200 break-all"
+                                   th:text="${item.media.url}">https://example.com/image.jpg</a>
+                            </td>
+                            <td class="py-4 pr-4 text-white/65"
+                                th:text="${#strings.length(item.description) > 120 ? #strings.substring(item.description, 0, 120) + '...' : item.description}">
+                                Mô tả
+                            </td>
+                            <td class="py-4">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <a th:href="@{/dashboard/characters/{id}/edit(id=${item.id})}" class="tab-btn"
+                                       style="background: rgba(59,130,246,0.14); color:#bfdbfe;">
+                                        Sửa
+                                    </a>
+                                    <form th:action="@{/dashboard/characters/{id}/delete(id=${item.id})}" method="post"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa nhân vật này?');">
+                                        <button type="submit" class="tab-btn"
+                                                style="background: rgba(239,68,68,0.14); color:#fecaca;">
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </main>
 </div>
 

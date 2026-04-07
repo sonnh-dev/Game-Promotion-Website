@@ -25,6 +25,14 @@ function formatDateLabel(yyyyMMdd) {
     return `${dd}/${mm}`;
 }
 
+function formatFullDateLabel(yyyyMMdd) {
+    if (!yyyyMMdd || yyyyMMdd.length !== 8) return 'Chưa có dữ liệu';
+    const yyyy = yyyyMMdd.substring(0, 4);
+    const mm = yyyyMMdd.substring(4, 6);
+    const dd = yyyyMMdd.substring(6, 8);
+    return `${dd}/${mm}/${yyyy}`;
+}
+
 function safeLucide() {
     if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
@@ -140,6 +148,29 @@ function renderMetricCards({overview, growth}) {
         changeEl.textContent = `${isUp ? '↑' : '↓'} ${pctText}`;
         changeEl.style.color = isUp ? '#34d399' : '#f87171';
         changeEl.style.background = isUp ? 'rgba(52,211,153,0.1)' : 'rgba(248,113,113,0.1)';
+    }
+}
+
+function renderRealtimeSummary({realtime, latestProcessedDate}) {
+    const activeUsersEl = qs('#realtime-active-users');
+    const pageViewsEl = qs('#realtime-pageviews');
+    const updatedEl = qs('#realtime-updated');
+    const dailyDateEl = qs('#daily-last-date');
+
+    if (activeUsersEl) {
+        activeUsersEl.textContent = Number(realtime?.activeUsers ?? 0).toLocaleString('vi-VN');
+    }
+
+    if (pageViewsEl) {
+        pageViewsEl.textContent = Number(realtime?.screenPageViews ?? 0).toLocaleString('vi-VN');
+    }
+
+    if (updatedEl) {
+        updatedEl.textContent = '30 phút gần nhất';
+    }
+
+    if (dailyDateEl) {
+        dailyDateEl.textContent = formatFullDateLabel(latestProcessedDate);
     }
 }
 
@@ -315,6 +346,8 @@ export async function initDashboard(options = {}) {
     const overview = normalizeOverview(apiData?.overview?.overview, overviewDaily);
     const growth = apiData?.overview?.growth || {};
     const sources = apiData?.sources || [];
+    const realtime = apiData?.realtime || {};
+    const latestProcessedDate = apiData?.overview?.latestProcessedDate || '';
 
     // Default UI state
     let rangeDays = 7;
@@ -328,6 +361,7 @@ export async function initDashboard(options = {}) {
     const renderAll = () => {
         const daily = getDailyForRange();
         renderMetricCards({overview, growth});
+        renderRealtimeSummary({realtime, latestProcessedDate});
         renderChart({daily, metricKey, rangeDays});
         renderSourcesAndDonut({sources});
         setActiveRangeButton(rangeDays);
