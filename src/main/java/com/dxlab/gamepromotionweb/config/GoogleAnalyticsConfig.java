@@ -14,7 +14,7 @@ public class GoogleAnalyticsConfig {
     @Bean
     public BetaAnalyticsDataClient analyticsDataClient() throws IOException {
         GoogleCredentials credentials = GoogleCredentials
-                .fromStream(new FileInputStream("D:\\FPT\\Term_6\\credentials.json"))
+                .fromStream(new FileInputStream("C:\\Users\\doant\\IdeaProjects\\Game-Promotion-Website\\src\\main\\resources\\credentials.json"))
                 .createScoped("https://www.googleapis.com/auth/analytics.readonly");
 
         BetaAnalyticsDataSettings settings = BetaAnalyticsDataSettings.newBuilder()
